@@ -2,7 +2,48 @@ import { ProductCard } from "@/components/ProductCard";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 
-export default function ShopPage() {
+type Product = {
+  id: string;
+  title: string;
+  description: string;
+  price: string;
+  isCustom: boolean;
+  inventoryItem?: {
+    status: "IN_STOCK" | "LOW_STOCK" | "OUT_OF_STOCK";
+  } | null;
+};
+
+async function getProducts(): Promise<Product[]> {
+  const response = await fetch("http://localhost:3000/api/products", {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    return [];
+  }
+
+  return response.json();
+}
+
+function getProductBadge(product: Product) {
+  if (product.isCustom) {
+    return "custom";
+  }
+
+  if (product.inventoryItem?.status === "LOW_STOCK") {
+    return "low-stock";
+  }
+
+  if (product.inventoryItem?.status === "OUT_OF_STOCK") {
+    return "sold-out";
+  }
+
+  return "new";
+}
+
+export default async function ShopPage() {
+  const products = await getProducts();
+
   return (
     <PageContainer>
       <SectionHeader
@@ -12,25 +53,16 @@ export default function ShopPage() {
       />
 
       <div className="mt-10 grid gap-6 md:grid-cols-3">
-        <ProductCard
-          name="Golden Hour Crochet Bag"
-          price="$65"
-          description="A soft, beach-ready crochet bag with pastel details."
-        />
-
-        <ProductCard
-          name="Blush Market Tote"
-          price="$58"
-          description="A roomy handmade tote for everyday use."
-          badge="low-stock"
-        />
-
-        <ProductCard
-          name="Custom Crochet Top"
-          price="From $85"
-          description="A made-to-measure crochet top designed around your fit."
-          badge="custom"
-        />
+        {products.map((product) => (
+          <ProductCard
+            key={product.id}
+            id={product.id}
+            name={product.title}
+            price={`$${product.price}`}
+            description={product.description}
+            badge={getProductBadge(product)}
+          />
+        ))}
       </div>
     </PageContainer>
   );
