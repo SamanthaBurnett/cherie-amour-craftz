@@ -47,3 +47,31 @@ model Customer {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+  SOLD_OUT
+}
+
+enum ProductCategory {
+  BAG
+  TOP
+  DRESS
+  SET
+  CUSTOM
+}
+
+model Product {
+  id           String          @id @default(cuid())
+  title        String
+  description  String
+  price        Decimal         @db.Decimal(10, 2)
+  category     ProductCategory
+  status       ProductStatus   @default(DRAFT)
+  isCustom     Boolean         @default(false)
+  thumbnailUrl String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
