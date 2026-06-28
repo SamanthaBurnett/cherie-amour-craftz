@@ -1,36 +1,141 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cherie Amour Craftz
 
-## Getting Started
+A custom crochet storefront for ready-made pieces, custom orders, measurements, inventory, and future order management.
 
-First, run the development server:
+## Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Cherie Amour Craftz is a full-stack e-commerce project for a crochet business that needs more than a simple storefront.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The business needs to support:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Ready-made crochet products
+- Custom crochet requests
+- Body measurements
+- Customer notes
+- Product inventory
+- Future payments
+- Future admin order management
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The long-term goal is to build this as a single-store application first, while keeping the architecture flexible enough to evolve into a multi-store platform for handmade creators.
 
-## Learn More
+## Problem Statement
 
-To learn more about Next.js, take a look at the following resources:
+Cherie Amour Craftz needs a storefront that supports both ready-made crochet pieces and custom crochet orders that require body measurements, reference images, order tracking, and inventory management.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Current:
 
-## Deploy on Vercel
+- Next.js
+- TypeScript
+- Tailwind CSS
+- React
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Planned:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- PostgreSQL
+- Prisma
+- Cloudinary
+- Stripe
+- Auth
+- Resend
+- Vercel
+
+## Current Features
+
+- Branded design system
+- Customer-facing page wireframes
+- Admin page wireframes
+- Responsive navigation
+- Reusable UI components
+- Brand documentation
+
+## Core Pages
+
+Customer:
+
+- Home
+- Shop
+- Product Details
+- Cart
+- Checkout
+- Custom Order
+- About
+- FAQ
+- Contact
+
+Admin:
+
+- Dashboard
+- Orders
+- Products
+- Inventory
+- Customers
+- Custom Requests
+
+## Milestones
+
+### Milestone 1 — Discovery & Design
+
+Status: Complete
+
+- Project setup
+- Branding
+- Theme configuration
+- Design system
+- Customer page wireframes
+- Admin page wireframes
+- Navigation and layout
+- README
+
+### Milestone 2 — Database Modeling
+
+Status: In Progess
+
+- Store model
+- Product model
+- Customer model
+- Order model
+- Inventory model
+- Custom request model
+- Measurement model
+
+### Milestone 3 — Customer Storefront
+
+Planned:
+
+- Product listing
+- Product details
+- Cart flow
+- Custom order intake
+- Contact form
+
+### Milestone 4 — Admin Dashboard
+
+Planned:
+
+- Product management
+- Order management
+- Inventory management
+- Custom request review
+- Customer records
+
+### Milestone 5 — Payments
+
+Planned:
+
+- Stripe checkout
+- Payment status handling
+- Webhooks
+- Order confirmation
+
+### Milestone 6 — Production Readiness
+
+Planned:
+
+- Validation
+- Error states
+- Loading states
+- Accessibility improvements
+- SEO
+- Deployment
