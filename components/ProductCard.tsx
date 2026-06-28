@@ -1,10 +1,10 @@
+import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
-
 import { Button } from "@/components/ui/Button";
-
 import { Card } from "@/components/ui/Card";
 
 type ProductCardProps = {
+  id?: string;
   name: string;
   price: string;
   description: string;
@@ -12,12 +12,13 @@ type ProductCardProps = {
 };
 
 export function ProductCard({
+  id,
   name,
   price,
   description,
   badge = "new",
 }: ProductCardProps) {
-  return (
+  const content = (
     <Card className="overflow-hidden p-0">
       <div className="h-56 bg-surface" />
 
@@ -32,8 +33,18 @@ export function ProductCard({
 
         <p className="mt-2 text-sm text-text-muted">{description}</p>
 
-        <Button className="mt-6 w-full">Add to Bag</Button>
+        <Button className="mt-6 w-full">View Details</Button>
       </div>
     </Card>
+  );
+
+  if (!id) {
+    return content;
+  }
+
+  return (
+    <Link href={`/shop/${id}`} className="block">
+      {content}
+    </Link>
   );
 }

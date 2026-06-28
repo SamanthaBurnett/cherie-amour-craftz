@@ -1,83 +1,126 @@
-import { Badge } from "@/components/ui/Badge";
+import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { ProductCard } from "@/components/ProductCard";
+import Link from "next/link";
 
-export default function Home() {
+type StoreProfile = {
+  businessName: string;
+  tagline: string | null;
+};
+
+type Product = {
+  id: string;
+  title: string;
+  description: string;
+  price: string;
+  isCustom: boolean;
+  inventoryItem?: {
+    status: "IN_STOCK" | "LOW_STOCK" | "OUT_OF_STOCK";
+  } | null;
+};
+
+async function getStoreProfile(): Promise<StoreProfile | null> {
+  const response = await fetch("http://localhost:3000/api/store", {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+
+  return response.json();
+}
+
+async function getProducts(): Promise<Product[]> {
+  const response = await fetch("http://localhost:3000/api/products", {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    return [];
+  }
+
+  return response.json();
+}
+
+function getProductBadge(product: Product) {
+  if (product.isCustom) {
+    return "custom";
+  }
+
+  if (product.inventoryItem?.status === "LOW_STOCK") {
+    return "low-stock";
+  }
+
+  if (product.inventoryItem?.status === "OUT_OF_STOCK") {
+    return "sold-out";
+  }
+
+  return "new";
+}
+
+export default async function Home() {
+  const [storeProfile, products] = await Promise.all([
+    getStoreProfile(),
+
+    getProducts(),
+  ]);
+
+  const featuredProducts = products.slice(0, 3);
+
   return (
     <PageContainer>
-      <SectionHeader
-        eyebrow="Cherie Amour Craftz"
-        title="Custom crochet pieces made with love."
-        description="Handmade pieces for beach days, golden hours, and custom fits."
-      />
+      <section className="grid gap-8 rounded-card border border-border bg-surface p-8 md:grid-cols-[1.2fr_0.8fr] md:p-12">
+        <div>
+          <p className="font-accent text-2xl text-coral">Handmade with Love</p>
 
-      <div className="mt-10 grid gap-6 md:grid-cols-3">
-        <Card>
-          <Badge>New</Badge>
-          <h3 className="mt-4 text-xl font-semibold">Ready-made pieces</h3>
-          <p className="mt-2 text-text-muted">
-            Shop available crochet pieces made for everyday beauty.
-          </p>
-          <Button className="mt-6">Shop Now</Button>
-        </Card>
+          <h1 className="mt-4 text-4xl font-bold text-text md:text-6xl">
+            {storeProfile?.businessName ?? "Cherie Amour Craftz"}
+          </h1>
 
-        <Card>
-          <Badge variant="custom">Custom</Badge>
-          <h3 className="mt-4 text-xl font-semibold">Custom orders</h3>
-          <p className="mt-2 text-text-muted">
-            Send your measurements and inspiration for a piece made just for
-            you.
-          </p>
-          <Button variant="secondary" className="mt-6">
-            Start Request
-          </Button>
-        </Card>
-
-        <Card>
-          <Badge variant="low-stock">Inventory</Badge>
-          <h3 className="mt-4 text-xl font-semibold">Limited drops</h3>
-          <p className="mt-2 text-text-muted">
-            Keep track of handmade pieces before they sell out.
+          <p className="mt-6 max-w-2xl text-lg text-text-muted">
+            {storeProfile?.tagline ??
+              "Custom crochet pieces made with love, made to fit you."}
           </p>
 
-          <Button variant="ghost" className="mt-6">
-            View Drops
-          </Button>
-        </Card>
-      </div>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link href="/shop">
+              <Button>Shop Pieces</Button>
+            </Link>
 
-      <div className="mt-16">
+            <Link href="/custom-order">
+              <Button variant="secondary">Start a Custom Order</Button>
+            </Link>
+          </div>
+        </div>
+
+        <Card className="flex min-h-72 items-center justify-center bg-white">
+          <p className="text-center text-text-muted">Hero image placeholder</p>
+        </Card>
+      </section>
+
+      <section className="mt-16">
         <SectionHeader
           eyebrow="Featured Pieces"
           title="Soft colors, custom details, handmade charm."
-          description="A preview of how product cards will look once inventory is connected."
+          description="A preview of ready-made and custom crochet pieces."
         />
 
         <div className="mt-10 grid gap-6 md:grid-cols-3">
-          <ProductCard
-            name="Golden Hour Crochet Bag"
-            price="$65"
-            description="A lightweight beach-ready bag with soft pastel details."
-          />
-
-          <ProductCard
-            name="Custom Crochet Top"
-            price="From $85"
-            description="Made-to-measure crochet top designed around your style and fit."
-            badge="custom"
-          />
-
-          <ProductCard
-            name="Blush Market Tote"
-            price="$58"
-            description="Roomy, soft, and perfect for everyday coastal living."
-            badge="low-stock"
-          />
+          {featuredProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              id={product.id}
+              name={product.title}
+              price={`$${product.price}`}
+              description={product.description}
+              badge={getProductBadge(product)}
+            />
+          ))}
         </div>
-      </div>
+      </section>
     </PageContainer>
   );
 }
