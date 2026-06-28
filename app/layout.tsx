@@ -1,6 +1,30 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import {
+  DM_Sans,
+  Inter,
+  Playfair_Display,
+  Geist,
+  Geist_Mono,
+} from "next/font/google";
 import "./globals.css";
+
+const inter = Inter({
+  variable: "--font-inter",
+
+  subsets: ["latin"],
+});
+
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
+
+  subsets: ["latin"],
+});
+
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+
+  subsets: ["latin"],
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +51,11 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body
+        className={`${inter.variable} ${dmSans.variable} ${playfair.variable} antialiased`}
+      >
+        {children}
+      </body>
     </html>
   );
 }
