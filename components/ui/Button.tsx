@@ -4,20 +4,16 @@ type ButtonProps = {
   className?: string;
 };
 
-
-
 export function Button({
   children,
   variant = "primary",
   className = "",
 }: ButtonProps) {
-  const baseStyles =
-    "rounded-button px-6 py-3 text-sm font-medium transition";
+  const baseStyles = "rounded-button px-6 py-3 text-sm font-medium transition";
 
   const variants = {
     primary: "bg-coral text-white hover:bg-coral-hover",
-    secondary:
-      "border border-coral bg-white text-text hover:bg-[#FFF4F2]",
+    secondary: "border border-coral bg-white text-text hover:bg-[#FFF4F2]",
     ghost: "text-text hover:text-coral",
   };
 

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { ProductCard } from "@/components/ProductCard";
 
 export default function Home() {
   return (
@@ -27,7 +28,8 @@ export default function Home() {
           <Badge variant="custom">Custom</Badge>
           <h3 className="mt-4 text-xl font-semibold">Custom orders</h3>
           <p className="mt-2 text-text-muted">
-            Send your measurements and inspiration for a piece made just for you.
+            Send your measurements and inspiration for a piece made just for
+            you.
           </p>
           <Button variant="secondary" className="mt-6">
             Start Request
@@ -45,6 +47,36 @@ export default function Home() {
             View Drops
           </Button>
         </Card>
+      </div>
+
+      <div className="mt-16">
+        <SectionHeader
+          eyebrow="Featured Pieces"
+          title="Soft colors, custom details, handmade charm."
+          description="A preview of how product cards will look once inventory is connected."
+        />
+
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          <ProductCard
+            name="Golden Hour Crochet Bag"
+            price="$65"
+            description="A lightweight beach-ready bag with soft pastel details."
+          />
+
+          <ProductCard
+            name="Custom Crochet Top"
+            price="From $85"
+            description="Made-to-measure crochet top designed around your style and fit."
+            badge="custom"
+          />
+
+          <ProductCard
+            name="Blush Market Tote"
+            price="$58"
+            description="Roomy, soft, and perfect for everyday coastal living."
+            badge="low-stock"
+          />
+        </div>
       </div>
     </PageContainer>
   );
