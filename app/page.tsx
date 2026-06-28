@@ -1,25 +1,51 @@
-import Image from "next/image";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { PageContainer } from "@/components/ui/PageContainer";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-background px-6 py-12 text-text">
-      <section className="mx-auto max-w-5x1 rounded-card border border-border bg-surface p-8">
-        <p className="mb-3 text-sm font-medium text-coral">
-          Handmade Crochet
-        </p>
+    <PageContainer>
+      <SectionHeader
+        eyebrow="Cherie Amour Craftz"
+        title="Custom crochet pieces made with love."
+        description="Handmade pieces for beach days, golden hours, and custom fits."
+      />
 
-        <h1 className="text-4x1 font-bold">
-          Cherie Amour Craftz
-        </h1>
+      <div className="mt-10 grid gap-6 md:grid-cols-3">
+        <Card>
+          <Badge>New</Badge>
+          <h3 className="mt-4 text-xl font-semibold">Ready-made pieces</h3>
+          <p className="mt-2 text-text-muted">
+            Shop available crochet pieces made for everyday beauty.
+          </p>
+          <Button className="mt-6">Shop Now</Button>
+        </Card>
 
-        <p className="mt-4 max-w-xl text-text-muted">
-          Custom crochet pieces made with love, made to fit you.
-        </p>
+        <Card>
+          <Badge variant="custom">Custom</Badge>
+          <h3 className="mt-4 text-xl font-semibold">Custom orders</h3>
+          <p className="mt-2 text-text-muted">
+            Send your measurements and inspiration for a piece made just for you.
+          </p>
+          <Button variant="secondary" className="mt-6">
+            Start Request
+          </Button>
+        </Card>
 
-        <button className="mt-6 rounded-button bg-coral px-6 py-3 font-medium text-white hover:bg-coral-hover">
-          Start a Custom Order
-        </button>
-      </section>
-    </main>
+        <Card>
+          <Badge variant="low-stock">Inventory</Badge>
+          <h3 className="mt-4 text-xl font-semibold">Limited drops</h3>
+          <p className="mt-2 text-text-muted">
+            Keep track of handmade pieces before they sell out.
+          </p>
+
+          <Button variant="ghost" className="mt-6">
+            View Drops
+          </Button>
+        </Card>
+      </div>
+    </PageContainer>
   );
 }
