@@ -39,14 +39,15 @@ model AdminUser {
 }
 
 model Customer {
-  id        String    @id @default(cuid())
-  firstName String
-  lastName  String
-  email     String    @unique
-  phone     String?
-  orders    Order[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id             String    @id @default(cuid())
+  firstName      String
+  lastName       String
+  email          String    @unique
+  phone          String?
+  orders         Order[]
+  customRequests CustomRequest[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 }
 
 enum ProductStatus {
@@ -167,4 +168,46 @@ model OrderItem {
 
   order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product   Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+}
+
+enum CustomRequestStatus {
+  PENDING_REVIEW
+  ACCEPTED
+  DECLINED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model CustomRequest {
+  id                String              @id @default(cuid())
+  customerId        String
+  status            CustomRequestStatus @default(PENDING_REVIEW)
+  itemType          String
+  description       String
+  referenceImageUrl String?
+  deadline          DateTime?
+  quotedPrice       Decimal?            @db.Decimal(10, 2)
+  adminNotes        String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  customer          Customer            @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  measurements      Measurement?
+}
+
+model Measurement {
+  id              String        @id @default(cuid())
+  customRequestId String        @unique
+  bust            Decimal?      @db.Decimal(5, 2)
+  waist           Decimal?      @db.Decimal(5, 2)
+  hips            Decimal?      @db.Decimal(5, 2)
+  length          Decimal?      @db.Decimal(5, 2)
+  shoulder        Decimal?      @db.Decimal(5, 2)
+  inseam          Decimal?      @db.Decimal(5, 2)
+  notes           String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  customRequest   CustomRequest @relation(fields: [customRequestId], references: [id], onDelete: Cascade)
 }
