@@ -93,7 +93,7 @@ model ProductImage {
 
 enum InventoryStatus {
   IN_STOCK
-  LOW_STOC
+  LOW_STOCK
   OUT_OF_STOCK
 }
 
