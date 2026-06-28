@@ -16,8 +16,6 @@ The business needs to support:
 - Future payments
 - Future admin order management
 
-The long-term goal is to build this as a single-store application first, while keeping the architecture flexible enough to evolve into a multi-store platform for handmade creators.
-
 ## Problem Statement
 
 Cherie Amour Craftz needs a storefront that supports both ready-made crochet pieces and custom crochet orders that require body measurements, reference images, order tracking, and inventory management.
