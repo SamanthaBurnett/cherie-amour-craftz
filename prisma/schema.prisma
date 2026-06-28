@@ -64,14 +64,66 @@ enum ProductCategory {
 }
 
 model Product {
+  id            String          @id @default(cuid())
+  title         String
+  description   String
+  price         Decimal         @db.Decimal(10, 2)
+  category      ProductCategory
+  status        ProductStatus   @default(DRAFT)
+  isCustom      Boolean         @default(false)
+  thumbnailUrl  String?
+  images        ProductImage[]
+  inventoryItem InventoryItem?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model ProductImage {
   id           String          @id @default(cuid())
-  title        String
-  description  String
-  price        Decimal         @db.Decimal(10, 2)
-  category     ProductCategory
-  status       ProductStatus   @default(DRAFT)
-  isCustom     Boolean         @default(false)
-  thumbnailUrl String?
+  productId    String
+  imageUrl     String
+  altText      String?
+  displayOrder Int             @default(0)
   createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
+  product      Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+enum InventoryStatus {
+  IN_STOCK
+  LOW_STOC
+  OUT_OF_STOCK
+}
+
+model InventoryItem {
+  id                String          @id @default(cuid())
+  productId         String          @unique
+  sku               String?         @unique
+  quantityOnHand    Int             @default(0)
+  lowStockThreshold Int             @default(1)
+  status            InventoryStatus @default(OUT_OF_STOCK)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  product           Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  adjustments       InventoryAdjustment[]
+}
+
+enum InventoryAdjustmentReason {
+  INITIAL_STOCK
+  RESTOCK
+  ORDER_PLACED
+  CORRECTION
+  DAMAGED
+  RETURNED
+}
+
+model InventoryAdjustment {
+  id              String                    @id @default(cuid())
+  inventoryItemId String
+  changeAmount    Int
+  reason          InventoryAdjustmentReason
+  note            String?
+  createdAt       DateTime                  @default(now())
+
+  inventoryItem   InventoryItem             @relation(fields: [inventoryItemId], references: [id], onDelete: Cascade)
 }
