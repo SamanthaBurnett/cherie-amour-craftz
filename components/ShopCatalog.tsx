@@ -13,6 +13,7 @@ type Product = {
   inventoryItem?: {
     status: "IN_STOCK" | "LOW_STOCK" | "OUT_OF_STOCK";
   } | null;
+  thumbnailUrl: string | null;
 };
 
 type ShopCatalogProps = {
@@ -120,6 +121,7 @@ export function ShopCatalog({ products }: ShopCatalogProps) {
             name={product.title}
             price={`$${product.price}`}
             description={product.description}
+            imageUrl={product.thumbnailUrl}
             badge={getProductBadge(product)}
           />
         ))}

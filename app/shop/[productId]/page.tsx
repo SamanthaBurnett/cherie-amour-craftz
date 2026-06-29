@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/Card";
 import { PageContainer } from "@/components/ui/PageContainer";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AddToCartButton } from "@/components/AddToCartButton";
 
 type Product = {
   id: string;
@@ -140,8 +141,13 @@ export default async function ProductDetailsPage({
           </div>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button>Add to Bag</Button>
-
+            <AddToCartButton
+              productId={product.id}
+              title={product.title}
+              price={product.price}
+              imageUrl={primaryImage}
+              disabled={product.inventoryItem?.status === "OUT_OF_STOCK"}
+            />
             <Link href="/custom-order">
               <Button variant="secondary">Ask About Custom</Button>
             </Link>

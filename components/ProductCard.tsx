@@ -8,6 +8,7 @@ type ProductCardProps = {
   name: string;
   price: string;
   description: string;
+  imageUrl?: string | null;
   badge?: "new" | "custom" | "sold-out" | "low-stock";
 };
 
@@ -16,11 +17,18 @@ export function ProductCard({
   name,
   price,
   description,
+  imageUrl,
   badge = "new",
 }: ProductCardProps) {
   const content = (
     <Card className="overflow-hidden p-0">
-      <div className="h-56 bg-surface" />
+      <div className="flex h-56 items-center justify-center bg-surface">
+        {imageUrl ? (
+          <p className="px-4 text-center text-sm text-text-muted">{imageUrl}</p>
+        ) : (
+          <p className="text-sm text-text-muted">Product image</p>
+        )}
+      </div>
 
       <div className="p-6">
         <div className="mb-4 flex items-center justify-between gap-4">
@@ -38,9 +46,7 @@ export function ProductCard({
     </Card>
   );
 
-  if (!id) {
-    return content;
-  }
+  if (!id) return content;
 
   return (
     <Link href={`/shop/${id}`} className="block">

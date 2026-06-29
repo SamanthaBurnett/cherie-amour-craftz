@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useCart } from "@/context/CartContext";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -25,6 +26,8 @@ export function Navbar() {
 
     return pathname.startsWith(href);
   };
+
+  const { totalItems } = useCart();
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur">
@@ -52,7 +55,7 @@ export function Navbar() {
             href="/cart"
             className="rounded-button border border-coral bg-white px-4 py-2 text-sm font-medium text-text transition hover:bg-[#FFF4F2]"
           >
-            Bag
+            Bag ({totalItems})
           </Link>
         </div>
 
@@ -89,7 +92,7 @@ export function Navbar() {
               onClick={() => setIsOpen(false)}
               className="rounded-2xl border border-coral bg-white px-4 py-3 text-sm font-medium text-text"
             >
-              Bag
+              Bag ({totalItems})
             </Link>
           </div>
         </div>

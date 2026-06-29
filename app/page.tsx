@@ -19,6 +19,7 @@ type Product = {
   inventoryItem?: {
     status: "IN_STOCK" | "LOW_STOCK" | "OUT_OF_STOCK";
   } | null;
+  thumbnailUrl: string | null;
 };
 
 async function getStoreProfile(): Promise<StoreProfile | null> {
@@ -116,6 +117,7 @@ export default async function Home() {
               name={product.title}
               price={`$${product.price}`}
               description={product.description}
+              imageUrl={product.thumbnailUrl}
               badge={getProductBadge(product)}
             />
           ))}
