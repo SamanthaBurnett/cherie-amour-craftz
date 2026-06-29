@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
+import Image from "next/image";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -32,8 +33,19 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="text-lg font-bold tracking-tight text-text">
-          Cherie Amour Craftz
+        <Link href="/" className="flex items-center gap-3">
+          <Image
+            src="/cac-logo.png"
+            alt="Cherie Amour Craftz"
+            width={52}
+            height={52}
+            className="rounded-full"
+            priority
+          />
+
+          <span className="font-serif text-lg font-semibold">
+            Cherie Amour Craftz
+          </span>
         </Link>
 
         <div className="hidden items-center gap-6 md:flex">
