@@ -1,34 +1,27 @@
-type ButtonProps = {
-  children: React.ReactNode;
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "primary" | "secondary" | "ghost";
-  className?: string;
-  disabled?: boolean;
-  onClick?: () => void;
 };
 
 export function Button({
   children,
   variant = "primary",
   className = "",
-  disabled = false,
-  onClick,
+  type = "button",
+  ...props
 }: ButtonProps) {
   const baseStyles = "rounded-button px-6 py-3 text-sm font-medium transition";
 
   const variants = {
     primary: "bg-coral text-white hover:bg-coral-hover",
-
     secondary: "border border-coral bg-white text-text hover:bg-[#FFF4F2]",
-
     ghost: "text-text hover:text-coral",
   };
 
   return (
     <button
-      type="button"
-      disabled={disabled}
-      onClick={onClick}
+      type={type}
       className={`${baseStyles} ${variants[variant]} ${className}`}
+      {...props}
     >
       {children}
     </button>
