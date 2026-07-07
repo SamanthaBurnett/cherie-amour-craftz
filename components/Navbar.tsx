@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import Image from "next/image";
+import { AuthButtons } from "./AuthButtons";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -69,6 +70,8 @@ export function Navbar() {
           >
             Bag ({totalItems})
           </Link>
+
+          <AuthButtons />
         </div>
 
         <button
