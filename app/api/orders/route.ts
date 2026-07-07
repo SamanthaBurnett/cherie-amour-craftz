@@ -87,6 +87,24 @@ export async function POST(request: NextRequest) {
 
     const total = subtotal.add(shipping).add(tax);
 
+    for (const item of orderItems) {
+      const inventoryItem = await prisma.inventoryItem.findUnique({
+        where: { productId: item.productId },
+      });
+
+      if (!inventoryItem) {
+        throw new Error(`Inventory not found for product: ${item.productId}`);
+      }
+
+      if (inventoryItem.quantityOnHand < item.quantity) {
+        return NextResponse.json(
+          { error: `Not enough inventory for product: ${item.productId}` },
+
+          { status: 400 },
+        );
+      }
+    }
+
     const order = await prisma.order.create({
       data: {
         customerId: customer.id,
@@ -107,6 +125,28 @@ export async function POST(request: NextRequest) {
         },
       },
     });
+
+    for (const item of orderItems) {
+      await prisma.inventoryItem.update({
+        where: { productId: item.productId },
+
+        data: {
+          quantityOnHand: {
+            decrement: item.quantity,
+          },
+
+          adjustments: {
+            create: {
+              changeAmount: -item.quantity,
+
+              reason: "ORDER_PLACED",
+
+              note: `Order placed: ${order.id}`,
+            },
+          },
+        },
+      });
+    }
 
     return NextResponse.json(order, { status: 201 });
   } catch (error) {
