@@ -2,29 +2,21 @@ import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { formatOrderStatus } from "@/lib/orderStatus";
 
 type Order = {
   id: string;
-
   status: string;
-
   total: string;
-
   createdAt: string;
-
   customer: {
     firstName: string;
-
     lastName: string;
-
     email: string;
   };
-
   items: {
     id: string;
-
     quantity: number;
-
     product: {
       title: string;
     };
@@ -79,7 +71,9 @@ export default async function AdminOrdersPage() {
               </div>
 
               <div className="text-right">
-                <Badge variant="custom">{order.status}</Badge>
+                <Badge variant="custom">
+                  {formatOrderStatus(order.status)}
+                </Badge>
 
                 <p className="mt-3 font-semibold">${order.total}</p>
 
