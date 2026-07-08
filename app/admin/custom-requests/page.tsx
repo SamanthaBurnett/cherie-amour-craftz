@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { CustomRequestActions } from "@/components/admin/CustomRequestActions";
 
 type CustomRequest = {
   id: string;
@@ -158,6 +159,8 @@ export default async function AdminCustomRequestsPage() {
                 <p className="mt-3 text-xs text-text-muted">
                   {new Date(request.createdAt).toLocaleDateString()}
                 </p>
+
+                <CustomRequestActions requestId={request.id} />
               </div>
             </div>
           </Card>
