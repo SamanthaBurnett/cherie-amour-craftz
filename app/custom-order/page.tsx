@@ -53,6 +53,30 @@ export default function CustomOrderPage() {
           </section>
 
           <section>
+            <h2 className="text-xl font-semibold">Inspiration Images</h2>
+
+            <p className="mt-2 text-sm text-text-muted">
+              Upload any reference photos, sketches, colors, or styles that help
+              explain your vision. Image storage will be connected in a future
+              milestone.
+            </p>
+
+            <label className="mt-6 block rounded-card border border-dashed border-border bg-surface p-6 text-center">
+              <span className="text-sm font-medium text-text">
+                Choose reference images
+              </span>
+
+              <input
+                name="referenceImages"
+                type="file"
+                accept="image/*"
+                multiple
+                className="mt-4 w-full rounded-2xl border border-border bg-white px-4 py-3 text-sm text-text"
+              />
+            </label>
+          </section>
+
+          <section>
             <h2 className="text-xl font-semibold">Measurements</h2>
 
             <p className="mt-2 text-sm text-text-muted">
