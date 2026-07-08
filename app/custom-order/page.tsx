@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/Input";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Textarea } from "@/components/ui/Textarea";
+import { MeasurementUnitSelector } from "@/components/MeasurementUnitSelector";
 
 export default function CustomOrderPage() {
   return (
@@ -84,18 +85,56 @@ export default function CustomOrderPage() {
               anything blank if it does not apply.
             </p>
 
+            <p className="mt-2 text-sm text-text-muted">
+              Choose one unit for all measurements so sizing stays consistent.
+            </p>
+
+            <div className="mt-6">
+              <MeasurementUnitSelector />
+            </div>
+
             <div className="mt-6 grid gap-4 md:grid-cols-2">
-              <Input label="Bust" name="bust" />
+              <Input
+                label="Bust"
+                name="bust"
+                type="number"
+                placeholder="Example: 34"
+              />
 
-              <Input label="Waist" name="waist" />
+              <Input
+                label="Waist"
+                name="waist"
+                type="number"
+                placeholder="Example: 28"
+              />
 
-              <Input label="Hips" name="hips" />
+              <Input
+                label="Hips"
+                name="hips"
+                type="number"
+                placeholder="Example: 38"
+              />
 
-              <Input label="Length" name="length" />
+              <Input
+                label="Length"
+                name="length"
+                type="number"
+                placeholder="Example: 16"
+              />
 
-              <Input label="Shoulder" name="shoulder" />
+              <Input
+                label="Shoulder"
+                name="shoulder"
+                type="number"
+                placeholder="Example: 15"
+              />
 
-              <Input label="Inseam" name="inseam" />
+              <Input
+                label="Inseam"
+                name="inseam"
+                type="number"
+                placeholder="Example: 30"
+              />
             </div>
 
             <div className="mt-4">
