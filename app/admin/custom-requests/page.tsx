@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/Card";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { CustomRequestActions } from "@/components/admin/CustomRequestActions";
+import { formatCustomRequestStatus } from "@/lib/customRequestStatus";
 
 type CustomRequest = {
   id: string;
@@ -154,7 +155,9 @@ export default async function AdminCustomRequestsPage() {
               </div>
 
               <div className="text-right">
-                <Badge variant="custom">{formatStatus(request.status)}</Badge>
+                <Badge variant="custom">
+                  {formatCustomRequestStatus(request.status)}
+                </Badge>
 
                 <p className="mt-3 text-xs text-text-muted">
                   {new Date(request.createdAt).toLocaleDateString()}
