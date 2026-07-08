@@ -15,27 +15,88 @@ export default function CustomOrderPage() {
       />
 
       <Card className="mx-auto mt-10 max-w-3xl">
-        <div className="grid gap-4">
-          <Input label="Full name" name="fullName" />
+        <form className="grid gap-8">
+          <section>
+            <h2 className="text-xl font-semibold">Customer Information</h2>
 
-          <Input label="Email" name="email" type="email" />
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              <Input label="First Name" name="firstName" />
 
-          <Input label="What would you like made?" name="itemType" />
+              <Input label="Last Name" name="lastName" />
+            </div>
 
-          <Input label="Bust measurement" name="bust" />
+            <div className="mt-4 grid gap-4">
+              <Input label="Email Address" name="email" type="email" />
 
-          <Input label="Waist measurement" name="waist" />
+              <Input label="Phone Number" name="phone" />
+            </div>
+          </section>
 
-          <Input label="Hip measurement" name="hip" />
+          <section>
+            <h2 className="text-xl font-semibold">Order Details</h2>
 
-          <Textarea
-            label="Tell us about your vision"
-            name="description"
-            placeholder="Colors, fit, deadline, inspiration, or anything important."
-          />
+            <div className="mt-6 grid gap-4">
+              <Input
+                label="What would you like made?"
+                name="itemType"
+                placeholder="Example: crochet top, bag, dress, cover-up"
+              />
 
-          <Button>Submit Custom Request</Button>
-        </div>
+              <Textarea
+                label="Describe your vision"
+                name="description"
+                placeholder="Tell us about colors, fit, style, occasion, inspiration, or anything important."
+              />
+
+              <Input label="Requested Deadline" name="deadline" type="date" />
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold">Measurements</h2>
+
+            <p className="mt-2 text-sm text-text-muted">
+              Add any measurements that apply to your custom piece. Leave
+              anything blank if it does not apply.
+            </p>
+
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              <Input label="Bust" name="bust" />
+
+              <Input label="Waist" name="waist" />
+
+              <Input label="Hips" name="hips" />
+
+              <Input label="Length" name="length" />
+
+              <Input label="Shoulder" name="shoulder" />
+
+              <Input label="Inseam" name="inseam" />
+            </div>
+
+            <div className="mt-4">
+              <Textarea
+                label="Measurement Notes"
+                name="measurementNotes"
+                placeholder="Add underbust, strap length, preferred fit, or any other sizing details."
+              />
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold">Additional Notes</h2>
+
+            <Textarea
+              label="Anything else?"
+              name="notes"
+              placeholder="Preferred colors, yarn preferences, event date, or special instructions."
+            />
+          </section>
+
+          <Button type="submit" className="w-full">
+            Continue Custom Request
+          </Button>
+        </form>
       </Card>
     </PageContainer>
   );
