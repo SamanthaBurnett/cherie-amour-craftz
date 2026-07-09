@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { OrderStatus } from "@/lib/generated/prisma/enums";
 
 type RouteParams = {
   params: Promise<{
@@ -7,15 +8,20 @@ type RouteParams = {
   }>;
 };
 
-export async function PATCH(
-  request: NextRequest,
-
-  { params }: RouteParams,
-) {
+export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
     const { orderId } = await params;
 
-    const { status } = await request.json();
+    const body = await request.json();
+
+    const status = body.status as OrderStatus;
+
+    if (!Object.values(OrderStatus).includes(status)) {
+      return NextResponse.json(
+        { error: "Invalid order status" },
+        { status: 400 },
+      );
+    }
 
     const updatedOrder = await prisma.order.update({
       where: {

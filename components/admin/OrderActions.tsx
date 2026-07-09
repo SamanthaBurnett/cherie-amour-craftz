@@ -1,40 +1,67 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 
-type Props = {
+type OrderActionsProps = {
   orderId: string;
 };
 
-export function OrderActions({ orderId }: Props) {
+export function OrderActions({ orderId }: OrderActionsProps) {
   const router = useRouter();
 
+  const [isUpdating, setIsUpdating] = useState(false);
+
   async function updateStatus(status: string) {
-    await fetch(`/api/admin/orders/${orderId}`, {
-      method: "PATCH",
+    setIsUpdating(true);
 
-      headers: {
-        "Content-Type": "application/json",
-      },
+    try {
+      const response = await fetch(`/api/admin/orders/${orderId}`, {
+        method: "PATCH",
 
-      body: JSON.stringify({ status }),
-    });
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-    router.refresh();
+        body: JSON.stringify({ status }),
+      });
+
+      if (!response.ok) {
+        console.error("Failed to update order status");
+
+        return;
+      }
+
+      router.refresh();
+    } catch (error) {
+      console.error("Failed to update order status", error);
+    } finally {
+      setIsUpdating(false);
+    }
   }
 
   return (
-    <div className="mt-4 flex flex-wrap gap-2">
-      <Button variant="secondary" onClick={() => updateStatus("IN_PROGRESS")}>
+    <div className="mt-4 flex flex-wrap justify-end gap-2">
+      <Button
+        variant="secondary"
+        disabled={isUpdating}
+        onClick={() => updateStatus("IN_PROGRESS")}
+      >
         Start
       </Button>
 
-      <Button variant="secondary" onClick={() => updateStatus("READY")}>
+      <Button
+        variant="secondary"
+        disabled={isUpdating}
+        onClick={() => updateStatus("READY")}
+      >
         Ready
       </Button>
 
-      <Button onClick={() => updateStatus("COMPLETED")}>Complete</Button>
+      <Button disabled={isUpdating} onClick={() => updateStatus("DELIVERED")}>
+        Complete
+      </Button>
     </div>
   );
 }
