@@ -68,30 +68,8 @@ export default async function AdminInventoryPage() {
                   Threshold: {item.lowStockThreshold}
                 </p>
 
-                {item.status === "LOW_STOCK" && (
-                  <p className="mt-2 text-sm font-medium text-coral">
-                    Low stock alert
-                  </p>
-                )}
-
-                {item.status === "OUT_OF_STOCK" && (
-                  <p className="mt-2 text-sm font-medium text-error">
-                    Out of stock
-                  </p>
-                )}
-
                 <div className="mt-4">
-                  <Badge
-                    variant={
-                      item.status === "OUT_OF_STOCK"
-                        ? "new"
-                        : item.status === "LOW_STOCK"
-                          ? "low-stock"
-                          : "custom"
-                    }
-                  >
-                    {formatLabel(item.status)}
-                  </Badge>
+                  <Badge variant="custom">{formatLabel(item.status)}</Badge>
                 </div>
               </div>
 
