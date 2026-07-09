@@ -10,6 +10,7 @@ type ProductCardProps = {
   description: string;
   imageUrl?: string | null;
   badge?: "new" | "custom" | "sold-out" | "low-stock";
+  availability?: string;
 };
 
 export function ProductCard({
@@ -19,7 +20,12 @@ export function ProductCard({
   description,
   imageUrl,
   badge = "new",
+  availability,
 }: ProductCardProps) {
+  const isSoldOut = availability === "OUT_OF_STOCK";
+
+  const isLowStock = availability === "LOW_STOCK";
+
   const content = (
     <Card className="overflow-hidden p-0">
       <div className="flex h-56 items-center justify-center bg-surface">
@@ -31,8 +37,16 @@ export function ProductCard({
       </div>
 
       <div className="p-6">
-        <div className="mb-4 flex items-center justify-between gap-4">
-          <Badge variant={badge}>{badge.replace("-", " ")}</Badge>
+        <div className="mb-4 flex items-start justify-between gap-4">
+          <div className="flex flex-wrap gap-2">
+            <Badge variant={badge}>{badge.replace("-", " ")}</Badge>
+
+            {isSoldOut && <Badge variant="sold-out">Sold Out</Badge>}
+
+            {!isSoldOut && isLowStock && (
+              <Badge variant="low-stock">Low Stock</Badge>
+            )}
+          </div>
 
           <p className="font-semibold text-text">{price}</p>
         </div>
@@ -41,12 +55,16 @@ export function ProductCard({
 
         <p className="mt-2 text-sm text-text-muted">{description}</p>
 
-        <Button className="mt-6 w-full">View Details</Button>
+        <Button className="mt-6 w-full">
+          {isSoldOut ? "View Details" : "View Details"}
+        </Button>
       </div>
     </Card>
   );
 
-  if (!id) return content;
+  if (!id) {
+    return content;
+  }
 
   return (
     <Link href={`/shop/${id}`} className="block">
