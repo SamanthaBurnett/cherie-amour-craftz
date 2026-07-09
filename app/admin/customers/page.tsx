@@ -1,39 +1,42 @@
-import { Card } from "@/components/ui/Card";
+import { CustomerSearch } from "@/components/admin/CustomerSearch";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 
-const customers = [
-  { name: "Maya J.", email: "maya@example.com", orders: 2 },
-  { name: "Tiana R.", email: "tiana@example.com", orders: 1 },
-  { name: "Leah M.", email: "leah@example.com", orders: 3 },
-];
+type Customer = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string | null;
+  createdAt: string;
+  orders: { id: string }[];
+  customRequests: { id: string }[];
+};
 
-export default function AdminCustomersPage() {
+async function getCustomers(): Promise<Customer[]> {
+  const response = await fetch("http://localhost:3000/api/admin/customers", {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    return [];
+  }
+
+  return response.json();
+}
+
+export default async function AdminCustomersPage() {
+  const customers = await getCustomers();
+
   return (
     <PageContainer>
       <SectionHeader
         eyebrow="Admin"
         title="Customers"
-        description="View customer profiles, saved measurements, and order history."
+        description="Search customers and review their order/custom request activity."
       />
 
-      <div className="mt-10 grid gap-4">
-        {customers.map((customer) => (
-          <Card key={customer.email}>
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="font-semibold">{customer.name}</p>
-
-                <p className="text-sm text-text-muted">{customer.email}</p>
-              </div>
-
-              <p className="text-sm text-text-muted">
-                {customer.orders} orders
-              </p>
-            </div>
-          </Card>
-        ))}
-      </div>
+      <CustomerSearch customers={customers} />
     </PageContainer>
   );
 }
