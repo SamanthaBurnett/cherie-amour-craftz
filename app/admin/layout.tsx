@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { AdminNav } from "@/components/admin/AdminNav";
 
 function getAdminEmails() {
   return (
@@ -28,5 +29,11 @@ export default async function AdminLayout({
     redirect("/");
   }
 
-  return <>{children}</>;
+  return (
+    <div className="mx-auto grid max-w-7xl gap-8 px-6 py-10 md:grid-cols-[16rem_1fr]">
+      <AdminNav />
+
+      <main>{children}</main>
+    </div>
+  );
 }
