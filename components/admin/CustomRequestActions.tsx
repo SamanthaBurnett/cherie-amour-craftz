@@ -5,10 +5,22 @@ import { Button } from "@/components/ui/Button";
 
 type CustomRequestActionsProps = {
   requestId: string;
+
+  status: string;
 };
 
-export function CustomRequestActions({ requestId }: CustomRequestActionsProps) {
+export function CustomRequestActions({
+  requestId,
+
+  status,
+}: CustomRequestActionsProps) {
   const router = useRouter();
+
+  const isFinalStatus = status === "ACCEPTED" || status === "DECLINED";
+
+  if (isFinalStatus) {
+    return null;
+  }
 
   async function updateStatus(status: "ACCEPTED" | "DECLINED") {
     await fetch(`/api/admin/custom-requests/${requestId}`, {

@@ -163,7 +163,10 @@ export default async function AdminCustomRequestsPage() {
                   {new Date(request.createdAt).toLocaleDateString()}
                 </p>
 
-                <CustomRequestActions requestId={request.id} />
+                <CustomRequestActions
+                  requestId={request.id}
+                  status={request.status}
+                />
               </div>
             </div>
           </Card>
