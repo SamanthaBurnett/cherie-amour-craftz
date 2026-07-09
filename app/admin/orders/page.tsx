@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/Card";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { formatOrderStatus } from "@/lib/orderStatus";
+import { OrderActions } from "@/components/admin/OrderActions";
 
 type Order = {
   id: string;
@@ -80,6 +81,8 @@ export default async function AdminOrdersPage() {
                 <p className="mt-1 text-xs text-text-muted">
                   {new Date(order.createdAt).toLocaleDateString()}
                 </p>
+
+                <OrderActions orderId={order.id} />
               </div>
             </div>
           </Card>
