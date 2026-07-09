@@ -1,28 +1,20 @@
 import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
 
 type Product = {
   id: string;
-
   title: string;
-
   description: string;
-
   price: string;
-
   category: string;
-
   status: string;
-
   isCustom: boolean;
-
   inventoryItem: {
     quantityOnHand: number;
-
     status: string;
   } | null;
 };
@@ -71,7 +63,7 @@ export default async function AdminProductsPage() {
       <div className="mt-10 grid gap-4">
         {products.map((product) => (
           <Card key={product.id}>
-            <div className="flex items-start justify-between gap-4">
+            <div className="grid gap-4 md:grid-cols-[1fr_9rem_9rem] md:items-center">
               <div>
                 <p className="font-semibold">{product.title}</p>
 
@@ -90,7 +82,7 @@ export default async function AdminProductsPage() {
                 </div>
               </div>
 
-              <div className="text-right">
+              <div className="md:text-right">
                 <p className="font-semibold">${product.price}</p>
 
                 <p className="mt-2 text-sm text-text-muted">
@@ -102,6 +94,12 @@ export default async function AdminProductsPage() {
                     ? formatLabel(product.inventoryItem.status)
                     : "No inventory"}
                 </p>
+              </div>
+
+              <div className="md:flex md:justify-end">
+                <Link href={`/admin/products/${product.id}/edit`}>
+                  <Button variant="secondary">Edit Product</Button>
+                </Link>
               </div>
             </div>
           </Card>
