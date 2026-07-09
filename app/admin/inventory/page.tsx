@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/Card";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { InventoryAdjustmentForm } from "@/components/admin/InventoryAdjustmentForm";
+import { InventoryHistory } from "@/components/admin/InventoryHistory";
 
 type InventoryItem = {
   id: string;
@@ -80,6 +81,7 @@ export default async function AdminInventoryPage() {
             </div>
 
             <InventoryAdjustmentForm inventoryItemId={item.id} />
+            <InventoryHistory inventoryItemId={item.id} />
           </Card>
         ))}
       </div>
