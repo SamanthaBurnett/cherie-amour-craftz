@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { calculateInventoryStatus } from "@/lib/inventory";
 
 export async function GET() {
   try {
@@ -58,12 +59,11 @@ export async function POST(request: NextRequest) {
             sku: sku?.trim() ? sku?.trim() : null,
             quantityOnHand: Number(quantityOnHand),
             lowStockThreshold: Number(lowStockThreshold),
-            status:
-              Number(quantityOnHand) <= 0
-                ? "OUT_OF_STOCK"
-                : Number(quantityOnHand) <= Number(lowStockThreshold)
-                  ? "LOW_STOCK"
-                  : "IN_STOCK",
+            status: calculateInventoryStatus(
+              Number(quantityOnHand),
+
+              Number(lowStockThreshold),
+            ),
             adjustments: {
               create: {
                 changeAmount: Number(quantityOnHand),

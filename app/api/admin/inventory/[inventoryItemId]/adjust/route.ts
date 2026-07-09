@@ -1,30 +1,13 @@
 import { prisma } from "@/lib/prisma";
-import {
-  InventoryAdjustmentReason,
-  InventoryStatus,
-} from "@/lib/generated/prisma/enums";
+import { InventoryAdjustmentReason } from "@/lib/generated/prisma/enums";
 import { NextRequest, NextResponse } from "next/server";
+import { calculateInventoryStatus } from "@/lib/inventory";
 
 type RouteParams = {
   params: Promise<{
     inventoryItemId: string;
   }>;
 };
-
-function calculateInventoryStatus(
-  quantityOnHand: number,
-  lowStockThreshold: number,
-) {
-  if (quantityOnHand <= 0) {
-    return InventoryStatus.OUT_OF_STOCK;
-  }
-
-  if (quantityOnHand <= lowStockThreshold) {
-    return InventoryStatus.LOW_STOCK;
-  }
-
-  return InventoryStatus.IN_STOCK;
-}
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
