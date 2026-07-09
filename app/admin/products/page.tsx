@@ -2,6 +2,8 @@ import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import Link from "next/link";
+import { Button } from "@/components/ui/Button";
 
 type Product = {
   id: string;
@@ -59,6 +61,12 @@ export default async function AdminProductsPage() {
         title="Products"
         description="View products, pricing, categories, and inventory status."
       />
+
+      <div className="mt-6">
+        <Link href="/admin/products/new">
+          <Button>Add Product</Button>
+        </Link>
+      </div>
 
       <div className="mt-10 grid gap-4">
         {products.map((product) => (

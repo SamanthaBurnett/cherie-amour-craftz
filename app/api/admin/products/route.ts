@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
   try {
@@ -21,6 +21,70 @@ export async function GET() {
 
     return NextResponse.json(
       { error: "Failed to fetch admin products" },
+
+      { status: 500 },
+    );
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+
+    const {
+      title,
+      description,
+      price,
+      category,
+      status,
+      isCustom,
+      thumbnailUrl,
+      quantityOnHand,
+      lowStockThreshold,
+      sku,
+    } = body;
+
+    const product = await prisma.product.create({
+      data: {
+        title,
+        description,
+        price,
+        category,
+        status,
+        isCustom,
+        thumbnailUrl: thumbnailUrl?.trim() ? thumbnailUrl?.trim() : null,
+        inventoryItem: {
+          create: {
+            sku: sku?.trim() ? sku?.trim() : null,
+            quantityOnHand: Number(quantityOnHand),
+            lowStockThreshold: Number(lowStockThreshold),
+            status:
+              Number(quantityOnHand) <= 0
+                ? "OUT_OF_STOCK"
+                : Number(quantityOnHand) <= Number(lowStockThreshold)
+                  ? "LOW_STOCK"
+                  : "IN_STOCK",
+            adjustments: {
+              create: {
+                changeAmount: Number(quantityOnHand),
+                reason: "INITIAL_STOCK",
+                note: "Initial product inventory.",
+              },
+            },
+          },
+        },
+      },
+      include: {
+        inventoryItem: true,
+      },
+    });
+
+    return NextResponse.json(product, { status: 201 });
+  } catch (error) {
+    console.error("Failed to create product", error);
+
+    return NextResponse.json(
+      { error: "Failed to create product" },
 
       { status: 500 },
     );
