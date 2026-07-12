@@ -54,30 +54,37 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    if (event.type === "checkout.session.completed") {
-      const checkoutSession = event.data.object;
+    switch (event.type) {
+      case "checkout.session.completed": {
+        const checkoutSession = event.data.object;
 
-      if (checkoutSession.payment_status !== "paid") {
-        return NextResponse.json({ received: true });
+        if (checkoutSession.payment_status === "paid") {
+          await fulfillPaidOrder(checkoutSession);
+        }
+
+        break;
       }
 
-      const orderId =
-        checkoutSession.metadata?.orderId ??
-        checkoutSession.client_reference_id;
+      case "checkout.session.async_payment_succeeded": {
+        const checkoutSession = event.data.object;
 
-      if (!orderId) {
-        console.error(
-          "Completed Stripe Checkout Session is missing an order ID.",
-        );
+        await fulfillPaidOrder(checkoutSession);
 
-        return NextResponse.json(
-          { error: "Order ID is missing." },
-
-          { status: 400 },
-        );
+        break;
       }
 
-      await fulfillPaidOrder(orderId, checkoutSession);
+      case "checkout.session.async_payment_failed":
+
+      case "checkout.session.expired": {
+        const checkoutSession = event.data.object;
+
+        await markOrderFailed(checkoutSession);
+
+        break;
+      }
+
+      default:
+        break;
     }
 
     return NextResponse.json({ received: true });
@@ -92,11 +99,35 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function fulfillPaidOrder(
-  orderId: string,
+function getOrderId(checkoutSession: Stripe.Checkout.Session): string | null {
+  return (
+    checkoutSession.metadata?.orderId ??
+    checkoutSession.client_reference_id ??
+    null
+  );
+}
 
+function getPaymentIntentId(
   checkoutSession: Stripe.Checkout.Session,
-) {
+): string | null {
+  if (typeof checkoutSession.payment_intent === "string") {
+    return checkoutSession.payment_intent;
+  }
+
+  return checkoutSession.payment_intent?.id ?? null;
+}
+
+async function fulfillPaidOrder(checkoutSession: Stripe.Checkout.Session) {
+  const orderId = getOrderId(checkoutSession);
+
+  if (!orderId) {
+    throw new Error(
+      `Stripe session ${checkoutSession.id} is missing an order ID.`,
+    );
+  }
+
+  const paymentIntentId = getPaymentIntentId(checkoutSession);
+
   await prisma.$transaction(async (transaction) => {
     const order = await transaction.order.findUnique({
       where: {
@@ -113,6 +144,44 @@ async function fulfillPaidOrder(
     }
 
     if (order.paymentStatus === PaymentStatus.PAID) {
+      return;
+    }
+
+    /*
+
+     * Atomically claim this order for fulfillment.
+
+     *
+
+     * If two copies of the webhook arrive together, only one transaction
+
+     * can change a non-PAID order to PAID. The other receives count = 0
+
+     * and exits before touching inventory.
+
+     */
+
+    const claimedOrder = await transaction.order.updateMany({
+      where: {
+        id: order.id,
+
+        paymentStatus: {
+          not: PaymentStatus.PAID,
+        },
+      },
+
+      data: {
+        paymentStatus: PaymentStatus.PAID,
+
+        stripeCheckoutSessionId: checkoutSession.id,
+
+        stripePaymentIntentId: paymentIntentId,
+
+        paidAt: new Date(),
+      },
+    });
+
+    if (claimedOrder.count === 0) {
       return;
     }
 
@@ -165,26 +234,33 @@ async function fulfillPaidOrder(
         },
       });
     }
+  });
+}
 
-    const paymentIntentId =
-      typeof checkoutSession.payment_intent === "string"
-        ? checkoutSession.payment_intent
-        : (checkoutSession.payment_intent?.id ?? null);
+async function markOrderFailed(checkoutSession: Stripe.Checkout.Session) {
+  const orderId = getOrderId(checkoutSession);
 
-    await transaction.order.update({
-      where: {
-        id: order.id,
+  if (!orderId) {
+    console.error(
+      `Stripe session ${checkoutSession.id} is missing an order ID.`,
+    );
+
+    return;
+  }
+
+  await prisma.order.updateMany({
+    where: {
+      id: orderId,
+
+      paymentStatus: {
+        not: PaymentStatus.PAID,
       },
+    },
 
-      data: {
-        paymentStatus: PaymentStatus.PAID,
+    data: {
+      paymentStatus: PaymentStatus.FAILED,
 
-        stripeCheckoutSessionId: checkoutSession.id,
-
-        stripePaymentIntentId: paymentIntentId,
-
-        paidAt: new Date(),
-      },
-    });
+      stripeCheckoutSessionId: checkoutSession.id,
+    },
   });
 }
