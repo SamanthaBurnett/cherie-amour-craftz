@@ -153,6 +153,11 @@ model Order {
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
 
+  paymentStatus           PaymentStatus @default(UNPAID)
+  stripeCheckoutSessionId String?       @unique
+  stripePaymentIntentId   String?       @unique
+  paidAt                  DateTime?
+
   customer   Customer    @relation(fields: [customerId], references: [id], onDelete: Restrict)
   items      OrderItem[]
 }
@@ -258,4 +263,13 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+enum PaymentStatus {
+  UNPAID
+  PROCESSING
+  PAID
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
 }
