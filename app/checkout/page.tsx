@@ -8,12 +8,19 @@ import { Input } from "@/components/ui/Input";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { useCart } from "@/context/CartContext";
-import { useRouter } from "next/navigation";
+
+type CreatedOrder = {
+  id: string;
+};
+
+type CheckoutSessionResponse = {
+  checkoutUrl?: string;
+
+  error?: string;
+};
 
 export default function CheckoutPage() {
-  const { items, subtotal, clearCart } = useCart();
-
-  const router = useRouter();
+  const { items, subtotal } = useCart();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -28,20 +35,26 @@ export default function CheckoutPage() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
+    if (items.length === 0) {
+      setErrorMessage("Your bag is empty.");
+
+      return;
+    }
+
     setIsSubmitting(true);
 
     setErrorMessage("");
 
     const formData = new FormData(event.currentTarget);
 
-    const payload = {
-      firstName: String(formData.get("firstName") ?? ""),
+    const orderPayload = {
+      firstName: String(formData.get("firstName") ?? "").trim(),
 
-      lastName: String(formData.get("lastName") ?? ""),
+      lastName: String(formData.get("lastName") ?? "").trim(),
 
-      email: String(formData.get("email") ?? ""),
+      email: String(formData.get("email") ?? "").trim(),
 
-      phone: String(formData.get("phone") ?? ""),
+      phone: String(formData.get("phone") ?? "").trim(),
 
       shipping,
 
@@ -55,28 +68,55 @@ export default function CheckoutPage() {
     };
 
     try {
-      const response = await fetch("/api/orders", {
+      const orderResponse = await fetch("/api/orders", {
         method: "POST",
 
         headers: {
           "Content-Type": "application/json",
         },
 
-        body: JSON.stringify(payload),
+        body: JSON.stringify(orderPayload),
       });
 
-      if (!response.ok) {
-        throw new Error("Order could not be created.");
+      const orderData = (await orderResponse.json()) as CreatedOrder & {
+        error?: string;
+      };
+
+      if (!orderResponse.ok) {
+        throw new Error(orderData.error ?? "Order could not be created.");
       }
 
-      clearCart();
+      const paymentResponse = await fetch("/api/payments/checkout", {
+        method: "POST",
 
-      router.push("/order-confirmation");
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          orderId: orderData.id,
+        }),
+      });
+
+      const paymentData =
+        (await paymentResponse.json()) as CheckoutSessionResponse;
+
+      if (!paymentResponse.ok || !paymentData.checkoutUrl) {
+        throw new Error(
+          paymentData.error ?? "Payment session could not be created.",
+        );
+      }
+
+      window.location.assign(paymentData.checkoutUrl);
     } catch (error) {
-      console.error(error);
+      console.error("Checkout failed", error);
 
-      setErrorMessage("Something went wrong while creating your order.");
-    } finally {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while starting payment.",
+      );
+
       setIsSubmitting(false);
     }
   }
@@ -128,12 +168,20 @@ export default function CheckoutPage() {
               </p>
             )}
 
+            {items.length === 0 && (
+              <p className="mt-6 text-sm text-text-muted">
+                Add an item to your bag before checking out.
+              </p>
+            )}
+
             <Button
               type="submit"
               className="mt-8 w-full"
               disabled={isSubmitting || items.length === 0}
             >
-              {isSubmitting ? "Placing Order..." : "Place Order"}
+              {isSubmitting
+                ? "Redirecting to Payment..."
+                : "Continue to Payment"}
             </Button>
           </form>
         </Card>
@@ -143,7 +191,7 @@ export default function CheckoutPage() {
 
           <div className="mt-6 space-y-3">
             {items.map((item) => (
-              <div key={item.productId} className="flex justify-between">
+              <div key={item.productId} className="flex justify-between gap-4">
                 <div>
                   <p className="font-medium">{item.title}</p>
 
@@ -186,7 +234,8 @@ export default function CheckoutPage() {
           </div>
 
           <p className="mt-6 text-sm text-text-muted">
-            Payments will be added in a future milestone.
+            You will be redirected to Stripe’s secure checkout to complete
+            payment.
           </p>
 
           <Link href="/cart">

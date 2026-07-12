@@ -126,28 +126,6 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    for (const item of orderItems) {
-      await prisma.inventoryItem.update({
-        where: { productId: item.productId },
-
-        data: {
-          quantityOnHand: {
-            decrement: item.quantity,
-          },
-
-          adjustments: {
-            create: {
-              changeAmount: -item.quantity,
-
-              reason: "ORDER_PLACED",
-
-              note: `Order placed: ${order.id}`,
-            },
-          },
-        },
-      });
-    }
-
     return NextResponse.json(order, { status: 201 });
   } catch (error) {
     console.error("Failed to create order", error);

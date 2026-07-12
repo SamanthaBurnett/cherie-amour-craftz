@@ -25,6 +25,7 @@ export default function CartPage() {
           title="Your bag is empty"
           description="Start shopping or request a custom piece made just for you."
           actionLabel="Shop Pieces"
+          actionHref="/shop"
         />
       </PageContainer>
     );

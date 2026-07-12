@@ -1,15 +1,18 @@
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 
 type EmptyStateProps = {
   title: string;
   description: string;
   actionLabel?: string;
+  actionHref?: string;
 };
 
 export function EmptyState({
   title,
   description,
   actionLabel,
+  actionHref,
 }: EmptyStateProps) {
   return (
     <div className="rounded-card border border-dashed border-border bg-white p-10 text-center">
@@ -21,7 +24,14 @@ export function EmptyState({
 
       <p className="mx-auto mt-2 max-w-md text-text-muted">{description}</p>
 
-      {actionLabel && <Button className="mt-6">{actionLabel}</Button>}
+      {actionLabel &&
+        (actionHref ? (
+          <Link href={actionHref}>
+            <Button className="mt-6">{actionLabel}</Button>
+          </Link>
+        ) : (
+          <Button className="mt-6">{actionLabel}</Button>
+        ))}
     </div>
   );
 }
